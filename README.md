@@ -1,7 +1,7 @@
 This is a much cleaner version of [this](https://github.com/jamesBaker361/doom.git)
 
 ## Step One
-Install the requirements file. Skip to step 5 if you don't want to generate your own data (stable retro doesn't work on all systems for some reason. It DOES work on the UMBC Chip cluster though)
+Install the requirements file and pull the experiment_helpers submodule. Skip to step 5 if you don't want to generate your own data (stable retro doesn't work on all systems for some reason. It DOES work on the UMBC Chip cluster though)
 
 ## Step Two
 Download the ROMs for Sonic, Castlvania and Mario [try this](https://www.romsgames.net/roms/sega-genesis/) and/or [this](https://www.romsgames.net/roms/super-nintendo/)  and save them to a folder called zipfiles
