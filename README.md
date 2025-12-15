@@ -15,4 +15,4 @@ Use 'push_plus.py' to upload each game dataset individually, and then use 'combi
 Train 'classification_model.py' or skip this if you want to use a pretrained one
 
 ## Step Six
-Run 'inversion_ivg.py' If you don't have your own data, use it with arg "--src_dataset  jlbaker361/merged_ivg_15_500"  and if you didn't train your own classifier use it with arg "--classifier_checkpoint jlbaker361/ivg-class-50 "# project-cv
+Run 'inversion_ivg.py' If you don't have your own data, use it with arg "--src_dataset  jlbaker361/merged_ivg_15_500"  and if you didn't train your own classifier use it with arg "--classifier_checkpoint jlbaker361/ivg-class-50 "
