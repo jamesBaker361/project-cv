@@ -1,0 +1,16 @@
+diffusers
+peft
+accelerate
+transformers
+huggingface_hub
+gymnasium
+stable-retro
+torch
+torchvision
+torchmetrics
+numpy
+accelerate
+pillow
+datasets
+wandb
+opencv-python
