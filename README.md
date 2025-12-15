@@ -1,3 +1,5 @@
+This is a much cleaner version of [this](https://github.com/jamesBaker361/doom.git)
+
 ## Step One
 Install the requirements file. Skip to step 5 if you don't want to generate your own data (stable retro doesn't work on all systems for some reason. It DOES work on the UMBC Chip cluster though)
 
