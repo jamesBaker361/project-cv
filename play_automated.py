@@ -6,7 +6,7 @@ import time
 from PIL import Image
 import argparse
 import csv
-from shared import game_state_dict
+from shared import game_state_dict,NONE_STRING
 import random
 
 
@@ -23,6 +23,7 @@ if __name__=='__main__':
     parser.add_argument("--game",type=str,default='SonicTheHedgehog2-Genesis',help="one of \n SuperMarioWorld-Snes \n CastlevaniaBloodlines-Genesis-v0 \n SonicTheHedgehog2-Genesis ")
     parser.add_argument("--state",type=str,default='EmeraldHillZone.Act1',help=state_help)
     parser.add_argument("--save_dir",type=str,default="videos")
+    parser.add_argument("--interval",type=int,default=4)
     parser.add_argument("--iterations",type=int,default=1)
     parser.add_argument("--automate",action="store_true")
     parser.add_argument("--frames",type=int,default=600)
@@ -30,7 +31,7 @@ if __name__=='__main__':
     args=parser.parse_args()
 
     # ---- SETTINGS ----
-    save_parent=os.path.join(args.save_dir,args.game,args.state)
+    save_parent=os.path.join(args.save_dir,str(args.interval),args.game,args.state)
     os.makedirs(save_parent, exist_ok=True)
     for g in range(args.iterations):
         n_games=len(os.listdir(save_parent))
@@ -52,6 +53,12 @@ if __name__=='__main__':
         BUTTONS = env.buttons
         print(BUTTONS)
         print(env.unwrapped.buttons)
+
+        LEFT="LEFT"
+        RIGHT="RIGHT"
+        UP="UP"
+        DOWN="DOWN"
+        B="B"
 
         # Keyboard → Genesis button
         KEY_TO_BUTTON = {
@@ -96,6 +103,8 @@ if __name__=='__main__':
         action = np.zeros(len(BUTTONS), dtype=np.int8)
         obs, rew, terminated, truncated, info=env.step(action)
         env.reset()
+        for n in range(50):
+            env.step(action)
         output_dict={
             key:[] for key in info
         }
@@ -107,21 +116,13 @@ if __name__=='__main__':
             for count in range(args.frames):
 
                 button=last_button
-
-                if last_button in ["RIGHT","LEFT"]:
-                    if random.random()<0.25:
-                        if random.random() <0.5:
-                            if last_button=="RIGHT":
-                                button="LEFT"
-                            else:
-                                button="RIGHT"
-                        else:
-                            button="B"
+                probs=[0.6,0.2,0.1,0.05,0.05]
+                if last_button ==RIGHT:
+                    button=np.random.choice([RIGHT,LEFT, B,UP,DOWN],p=probs)
+                elif last_button==LEFT:
+                    button=np.random.choice([LEFT, RIGHT,B,UP,DOWN],p=probs)
                 else:
-                    if random.random()<0.5:
-                        button="RIGHT"
-                    else:
-                        button="LEFT"
+                    button=np.random.choice([LEFT, RIGHT,B,UP,DOWN],p=[0.4,0.4,0.1,0.05,0.05])
 
                 action = np.zeros(len(BUTTONS), dtype=np.int8)
                 idx = button_index.get(button, None)
@@ -129,21 +130,27 @@ if __name__=='__main__':
                     action[idx] = 1
 
                 if np.sum(action)<1:
-                    output_dict["action"].append("None")
+                    output_dict["action"].append(NONE_STRING)
                 else:
                     output_dict["action"].append(button)
-                obs, rew, terminated, truncated, info=env.step(action)
+                for _ in range(args.interval):
+                    obs, rew, terminated, truncated, info=env.step(action)
+                env.render()
+                clock.tick(60)  # limit to 60 FPS for smooth control
+
+                if terminated or truncated:
+                    break
 
                 image=obs
-                image = Image.fromarray(image).resize((256,256))
+                image = Image.fromarray(image)  #.resize((256,256))
                 save_path_image=os.path.join(save_dir,f"{count}.jpg")
                 image.save(save_path_image)
-                env.render()
+                
 
                 # Save user action
                 action_log.append(action.copy())
 
-                clock.tick(60)  # limit to 60 FPS for smooth control
+                
 
                 for key in info:
                     output_dict[key].append(info[key])
